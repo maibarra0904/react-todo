@@ -1,11 +1,11 @@
 import { DragDropContext} from "@hello-pangea/dnd";
 
 import { useEffect, useState } from "react";
-import { Header } from "../components/Header";
-import { TodoComputed } from "../components/TodoComputed";
-import { TodoCreate } from "../components/TodoCreate";
-import { TodoFilter } from "../components/TodoFilter";
-import { TodoList } from "../components/TodoList";
+import { Header } from "./components/Header";
+import { TodoComputed } from "./components/TodoComputed";
+import { TodoCreate } from "./components/TodoCreate";
+import { TodoFilter } from "./components/TodoFilter";
+import { TodoList } from "./components/TodoList";
 
 const initialStateTodos = JSON.parse(localStorage.getItem("todos")) || [];
 
