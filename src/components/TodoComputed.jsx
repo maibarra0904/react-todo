@@ -1,15 +1,16 @@
 export const TodoComputed = ({computedItemsLeft, computedItemsCompleted, clearCompleted}) => {
   return (
-    <section className="py-4 px-4 flex justify-between bg-white rounded-b-md dark:bg-gray-800 transition-all duration-700">
-      <span className="text-gray-400">{computedItemsLeft} items left</span>
-      <span className="text-gray-400">{computedItemsCompleted} items completed</span>
-      <button className="text-gray-400 hover:text-red-500" onClick={clearCompleted}>Clear completed</button>
+    <section className="bg-white dark:bg-gray-800 rounded-bottom p-3 d-flex justify-content-between align-items-center">
+      <span className="text-secondary">{computedItemsLeft} items left</span>
+      <span className="text-secondary">{computedItemsCompleted} items completed</span>
+      <button className="btn btn-link text-danger p-0" onClick={clearCompleted}>Clear completed</button>
     </section>
   );
 };
 
+import PropTypes from "prop-types";
 TodoComputed.propTypes={
-  computedItemsLeft: Function,
-  clearCompleted: Function,
-  computedItemsCompleted: Function
+  computedItemsLeft: PropTypes.number.isRequired,
+  clearCompleted: PropTypes.func.isRequired,
+  computedItemsCompleted: PropTypes.number.isRequired
 }

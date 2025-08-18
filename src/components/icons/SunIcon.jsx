@@ -15,6 +15,4 @@ const SunIcon = ({ ...props }) => {
 
 export default SunIcon;
 
-SunIcon.propTypes = {
-  props: Function,
-};
+
