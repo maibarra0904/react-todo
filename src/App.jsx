@@ -7,6 +7,7 @@ import { TodoCreate } from "./components/TodoCreate";
 import { TodoFilter } from "./components/TodoFilter";
 import { TodoList } from "./components/TodoList";
 import { ProjectSidebar } from "./components/ProjectSidebar";
+import { DataSidebar } from "./components/DataSidebar";
 import Login from "./components/Login";
 // Leer la URL de la API desde variable de entorno Vite
 
@@ -47,7 +48,8 @@ function App() {
   const [projects, setProjects] = useState(initialStateProjects);
   const [currentProjectId, setCurrentProjectId] = useState(initialStateProjects[0]?.id || "");
   const [filter, setFilter] = useState('all');
-  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 768);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [dataSidebarOpen, setDataSidebarOpen] = useState(true);
   const [user, setUser] = useState(() => {
     // Persistencia simple en localStorage
     try {
@@ -201,13 +203,12 @@ function App() {
 
   return (
     <div className="bg-gray-300 dark:bg-gray-800 transition-all duration-700 bg-[url('./assets/images/bg-mobile-light.jpg')] bg-no-repeat bg-contain min-h-screen dark:bg-[url('./assets/images/bg-mobile-dark.jpg')] md:bg-[url('./assets/images/bg-desktop-light.jpg')] md:dark:bg-[url('./assets/images/bg-desktop-dark.jpg')] flex">
+      {/* Sidebars fijos */}
       <ProjectSidebar
         projects={projects}
         currentProjectId={currentProjectId}
         onSelectProject={selectProject}
         onCreateProject={createProject}
-        onExport={exportProjects}
-        onImport={importProjects}
         onDeleteProject={(id) => {
           const newProjects = projects.filter(p => p.id !== id);
           setProjects(newProjects);
@@ -218,11 +219,19 @@ function App() {
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
       />
+      <DataSidebar
+        onExport={exportProjects}
+        onImport={importProjects}
+        dataSidebarOpen={dataSidebarOpen}
+        setDataSidebarOpen={setDataSidebarOpen}
+      />
+      {/* Wrapper para centrar el contenido entre sidebars */}
       <div
         className="flex-1 transition-all"
         style={{
           marginLeft: sidebarOpen ? '18rem' : 0,
-          transition: 'margin-left 0.3s',
+          marginRight: dataSidebarOpen ? '18rem' : 0,
+          transition: 'margin-left 0.3s, margin-right 0.3s',
         }}
       >
         <div className="d-flex justify-content-end align-items-center p-2">
@@ -249,7 +258,7 @@ function App() {
             }}
             onClick={handleLogout}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" style={{marginRight:6,verticalAlign:'middle'}}><path d="M6 13.5A1.5 1.5 0 0 1 4.5 12V4A1.5 1.5 0 0 1 6 2.5h4A1.5 1.5 0 0 1 11.5 4v2a.5.5 0 0 1-1 0V4a.5.5 0 0 0-.5-.5H6A.5.5 0 0 0 5.5 4v8a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 10 13.5H6z"/><path d="M8.146 11.354a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 9.293V6.5a.5.5 0 0 0-1 0v2.793l-2.646-2.647a.5.5 0 0 0-.708.708l3 3z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" style={{marginRight:6,verticalAlign:'middle'}}><path d="M6 13.5A1.5 1.5 0 0 1 4.5 12V4A1.5.5 0 0 1 6 2.5h4A1.5.5 0 0 1 11.5 4v2a.5.5 0 0 1-1 0V4a.5.5 0 0 0-.5-.5H6A.5.5 0 0 0 5.5 4v8a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 10 13.5H6z"/><path d="M8.146 11.354a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 9.293V6.5a.5.5 0 0 0-1 0v2.793l-2.646-2.647a.5.5 0 0 0-.708.708l3 3z"/></svg>
             Cerrar sesión
           </button>
         </div>

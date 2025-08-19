@@ -40,6 +40,18 @@ export default function Login({ onLogin, loading }) {
         <button type="submit" className="btn btn-primary w-100" disabled={loading}>
           {loading ? 'Ingresando...' : 'Entrar'}
         </button>
+        <div className="text-center mt-3">
+          <span className="text-secondary" style={{fontSize:'0.95rem'}}>¿No tienes cuenta?&nbsp;</span>
+          <a
+            href="https://staticwebappstore.netlify.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary fw-bold text-decoration-underline"
+            style={{fontSize:'0.95rem'}}
+          >
+            Regístrate aquí
+          </a>
+        </div>
       </form>
     </div>
   );

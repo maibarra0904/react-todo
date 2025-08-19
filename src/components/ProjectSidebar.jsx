@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 // Inyectar estilos globales para hover en modo claro/oscuro
 const sidebarCustomStyles = `
 .project-btn.btn-outline-secondary:hover,
@@ -48,11 +48,10 @@ function useSidebarCustomStyles() {
 }
 import Swal from 'sweetalert2';
 
-export const ProjectSidebar = ({ projects, currentProjectId, onSelectProject, onCreateProject, onExport, onImport, onDeleteProject, sidebarOpen, setSidebarOpen }) => {
+export const ProjectSidebar = ({ projects, currentProjectId, onSelectProject, onCreateProject, onDeleteProject, sidebarOpen, setSidebarOpen }) => {
   useSidebarCustomStyles();
   const [newProjectName, setNewProjectName] = useState("");
-  const fileInputRef = useRef();
-  const [showImport, setShowImport] = useState(false);
+  // Eliminados estados y refs de import/export
 
   const handleCreate = () => {
     if (newProjectName.trim()) {
@@ -61,26 +60,7 @@ export const ProjectSidebar = ({ projects, currentProjectId, onSelectProject, on
     }
   };
 
-  const handleImport = () => {
-    if (fileInputRef.current && fileInputRef.current.files.length > 0) {
-      const file = fileInputRef.current.files[0];
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const data = JSON.parse(e.target.result);
-          onImport(data);
-          setShowImport(false);
-          fileInputRef.current.value = "";
-          Swal.fire({ icon: 'success', title: 'Importación exitosa', timer: 1500, showConfirmButton: false, confirmButtonColor: '#3085d6' });
-        } catch {
-          Swal.fire({ icon: 'error', title: 'JSON inválido', text: 'El archivo no tiene el formato correcto.', confirmButtonColor: '#3085d6' });
-        }
-      };
-      reader.readAsText(file);
-    } else {
-  Swal.fire({ icon: 'warning', title: 'Selecciona un archivo JSON', confirmButtonColor: '#3085d6' });
-    }
-  };
+  // Eliminada función de importación
 
   // Responsive: mostrar botón flotante en móvil
   return (
@@ -185,21 +165,7 @@ export const ProjectSidebar = ({ projects, currentProjectId, onSelectProject, on
             </li>
           ))}
         </ul>
-        <div className="d-flex flex-column gap-2">
-          <button onClick={onExport} className="btn btn-success mb-2">Exportar</button>
-          <button onClick={() => setShowImport(!showImport)} className="btn btn-warning mb-2">{showImport ? 'Cerrar' : 'Importar'}</button>
-          {showImport && (
-            <div className="mt-2">
-              <input
-                type="file"
-                accept="application/json"
-                ref={fileInputRef}
-                className="form-control mb-2 bg-white dark:bg-gray-800 text-dark dark:text-light"
-              />
-              <button onClick={handleImport} className="btn btn-warning w-100">Importar</button>
-            </div>
-          )}
-        </div>
+  {/* Gestión de proyectos únicamente, sin botones de importación/exportación */}
       </aside>
       {/* Fondo oscuro al abrir sidebar en móvil */}
       {sidebarOpen && (
@@ -214,8 +180,7 @@ ProjectSidebar.propTypes = {
   currentProjectId: PropTypes.string.isRequired,
   onSelectProject: PropTypes.func.isRequired,
   onCreateProject: PropTypes.func.isRequired,
-  onExport: PropTypes.func.isRequired,
-  onImport: PropTypes.func.isRequired,
+  // onExport y onImport eliminados, ya no son requeridos
   onDeleteProject: PropTypes.func.isRequired,
   sidebarOpen: PropTypes.bool.isRequired,
   setSidebarOpen: PropTypes.func.isRequired,
