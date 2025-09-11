@@ -3,7 +3,6 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import swasLogo from '../assets/swas-logo.svg';
 
-const FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL;
 
 export default function Login({ onLogin, loading }) {
   const [email, setEmail] = useState('');
@@ -42,16 +41,16 @@ export default function Login({ onLogin, loading }) {
         <button type="submit" className="btn btn-primary w-100" disabled={loading}>
           {loading ? 'Ingresando...' : 'Entrar'}
         </button>
-        <div className="text-center mt-2">
-          <a
-            href={`${FRONTEND_URL}/register`}
-            className="text-blue-600 hover:underline text-sm"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            ¿No tienes cuenta? Regístrate aquí
-          </a>
-        </div>
+        <div style={{ marginTop: '16px', textAlign: 'center' }}>
+            <a 
+              href={`${import.meta.env.VITE_FRONTEND_URL}/register`} 
+              style={{ color: '#007bff', textDecoration: 'underline' }}
+              target="_blank" 
+              rel="noopener noreferrer"
+            >
+              ¿No tienes cuenta? Regístrate aquí
+            </a>
+          </div>
       </form>
     </div>
   );
