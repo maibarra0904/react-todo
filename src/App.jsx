@@ -49,7 +49,7 @@ function App() {
   const [currentProjectId, setCurrentProjectId] = useState(initialStateProjects[0]?.id || "");
   const [filter, setFilter] = useState('all');
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [dataSidebarOpen, setDataSidebarOpen] = useState(true);
+  const [dataSidebarOpen, setDataSidebarOpen] = useState(false);
   const [user, setUser] = useState(() => {
     // Persistencia simple en localStorage
     try {
