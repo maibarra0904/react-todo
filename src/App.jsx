@@ -121,7 +121,7 @@ function App() {
       title: title.trim(),
       completed: false
     };
-    setTodosForCurrent([...todos, newTodo]);
+    setTodosForCurrent([newTodo, ...todos]);
   };
 
   const removeTodo = (id) => {
