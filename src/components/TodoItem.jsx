@@ -68,12 +68,19 @@ const TodoItem = React.forwardRef(
             maxLength={100}
           />
         ) : (
-          <span
-            className={`flex-grow-1 text-secondary-emphasis ${completed ? 'text-decoration-line-through' : ''}`}
-            style={{fontSize: '1.1rem'}}
-          >
-            {title}
-          </span>
+          <div className="flex-grow-1 d-flex flex-column">
+            <span
+              className={`text-secondary-emphasis ${completed ? 'text-decoration-line-through' : ''}`}
+              style={{fontSize: '1.1rem'}}
+            >
+              {title}
+            </span>
+            {todo.completedAt && (
+              <small className="text-muted" style={{fontSize: '0.8rem'}}>
+                ✅ Ejecutado el: {todo.completedAt}
+              </small>
+            )}
+          </div>
         )}
         <button
           className="btn btn-link text-primary p-0 ms-2"

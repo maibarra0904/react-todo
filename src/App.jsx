@@ -129,7 +129,31 @@ function App() {
   };
 
   const updateTodo = (id) => {
-    setTodosForCurrent(todos.map(todo => todo.id === id ? { ...todo, completed: !todo.completed } : todo));
+    const updatedTodos = todos.map(todo => {
+      if (todo.id === id) {
+        const isTurningCompleted = !todo.completed;
+        return {
+          ...todo,
+          completed: isTurningCompleted,
+          completedAt: isTurningCompleted ? new Date().toLocaleString('es-ES', { 
+            year: 'numeric', 
+            month: '2-digit', 
+            day: '2-digit', 
+            hour: '2-digit', 
+            minute: '2-digit' 
+          }) : null
+        };
+      }
+      return todo;
+    });
+
+    const updatedItem = updatedTodos.find(t => t.id === id);
+    if (updatedItem && updatedItem.completed) {
+      const withoutCompletedItem = updatedTodos.filter(t => t.id !== id);
+      setTodosForCurrent([...withoutCompletedItem, updatedItem]);
+    } else {
+      setTodosForCurrent(updatedTodos);
+    }
   };
 
   const computedItemsLeft = todos.filter((todo) => !todo.completed).length;
@@ -161,7 +185,16 @@ function App() {
       source.droppableId === destination.droppableId
     )
       return;
-    setTodosForCurrent(reorder(todos, source.index, destination.index));
+
+    const draggedItem = filteredTodos[source.index];
+    const sourceIndexInTodos = todos.findIndex(t => t.id === draggedItem.id);
+
+    const targetItem = filteredTodos[destination.index];
+    const destinationIndexInTodos = todos.findIndex(t => t.id === targetItem.id);
+
+    if (sourceIndexInTodos !== -1 && destinationIndexInTodos !== -1) {
+      setTodosForCurrent(reorder(todos, sourceIndexInTodos, destinationIndexInTodos));
+    }
   };
 
   // Project management
