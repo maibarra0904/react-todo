@@ -3,6 +3,7 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import swasLogo from '../assets/swas-logo.svg';
 
+
 export default function Login({ onLogin, loading }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -40,18 +41,16 @@ export default function Login({ onLogin, loading }) {
         <button type="submit" className="btn btn-primary w-100" disabled={loading}>
           {loading ? 'Ingresando...' : 'Entrar'}
         </button>
-        <div className="text-center mt-3">
-          <span className="text-secondary" style={{fontSize:'0.95rem'}}>¿No tienes cuenta?&nbsp;</span>
-          <a
-            href="https://staticwebappstore.netlify.app/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary fw-bold text-decoration-underline"
-            style={{fontSize:'0.95rem'}}
-          >
-            Regístrate aquí
-          </a>
-        </div>
+        <div style={{ marginTop: '16px', textAlign: 'center' }}>
+            <a 
+              href={`${import.meta.env.VITE_FRONTEND_URL}/register`} 
+              style={{ color: '#007bff', textDecoration: 'underline' }}
+              target="_blank" 
+              rel="noopener noreferrer"
+            >
+              ¿No tienes cuenta? Regístrate aquí
+            </a>
+          </div>
       </form>
     </div>
   );
