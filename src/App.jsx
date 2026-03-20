@@ -121,7 +121,15 @@ function App() {
       title: title.trim(),
       completed: false
     };
-    setTodosForCurrent([newTodo, ...todos]);
+    const firstCompletedIndex = todos.findIndex(t => t.completed);
+    
+    if (firstCompletedIndex === -1) {
+      setTodosForCurrent([...todos, newTodo]);
+    } else {
+      const beforeCompleted = todos.slice(0, firstCompletedIndex);
+      const afterCompleted = todos.slice(firstCompletedIndex);
+      setTodosForCurrent([...beforeCompleted, newTodo, ...afterCompleted]);
+    }
   };
 
   const removeTodo = (id) => {
