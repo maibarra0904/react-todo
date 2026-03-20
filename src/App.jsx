@@ -187,9 +187,21 @@ function App() {
       return;
 
     const draggedItem = filteredTodos[source.index];
-    const sourceIndexInTodos = todos.findIndex(t => t.id === draggedItem.id);
+    const activeCount = filteredTodos.filter(t => !t.completed).length;
+
+    // Restricciones para mantener separadas activas de completadas
+    if (!draggedItem.completed) {
+      if (destination.index >= activeCount) {
+        return; // Cancelar: Tarea activa no puede ir abajo de completadas
+      }
+    } else {
+      if (destination.index < activeCount) {
+        return; // Cancelar: Tarea completada no puede subir a zona de activas
+      }
+    }
 
     const targetItem = filteredTodos[destination.index];
+    const sourceIndexInTodos = todos.findIndex(t => t.id === draggedItem.id);
     const destinationIndexInTodos = todos.findIndex(t => t.id === targetItem.id);
 
     if (sourceIndexInTodos !== -1 && destinationIndexInTodos !== -1) {
