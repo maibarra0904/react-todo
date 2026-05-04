@@ -2,9 +2,10 @@ import { useState } from 'react';
 
 import PropTypes from 'prop-types';
 import swasLogo from '../assets/swas-logo.svg';
+import { GoogleLogin } from '@react-oauth/google';
 
 
-export default function Login({ onLogin, loading }) {
+export default function Login({ onLogin, onGoogleLogin, loading }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -41,6 +42,22 @@ export default function Login({ onLogin, loading }) {
         <button type="submit" className="btn btn-primary w-100" disabled={loading}>
           {loading ? 'Ingresando...' : 'Entrar'}
         </button>
+
+        <div className="d-flex align-items-center w-100 my-3">
+          <hr className="flex-grow-1" />
+          <span className="px-2 text-muted" style={{fontSize: '0.875rem'}}>o</span>
+          <hr className="flex-grow-1" />
+        </div>
+        
+        <div className="d-flex justify-content-center w-100 mb-3">
+          <GoogleLogin 
+            onSuccess={credentialResponse => {
+              if(onGoogleLogin) onGoogleLogin(credentialResponse, setError);
+            }}
+            onError={() => setError('Error al iniciar sesión con Google')}
+          />
+        </div>
+
         <div style={{ marginTop: '16px', textAlign: 'center' }}>
             <a 
               href={`${import.meta.env.VITE_FRONTEND_URL}/register`} 
@@ -58,5 +75,6 @@ export default function Login({ onLogin, loading }) {
 
 Login.propTypes = {
   onLogin: PropTypes.func.isRequired,
+  onGoogleLogin: PropTypes.func,
   loading: PropTypes.bool
 };

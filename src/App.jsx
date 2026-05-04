@@ -86,6 +86,32 @@ function App() {
     }
   };
 
+  // Google Login handler
+  const handleGoogleLogin = async (credentialResponse, setError) => {
+    setLoading(true);
+    const API_URL = import.meta.env.VITE_API_URL;
+    setError && setError("");
+    try {
+      const res = await fetch(`${API_URL}/google`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken: credentialResponse.credential })
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || 'Error en autenticación con Google');
+      }
+      const data = await res.json();
+      setUser(data.user || {});
+      localStorage.setItem('user', JSON.stringify(data.user || {}));
+    } catch (err) {
+      setError && setError(err.message || 'Error de autenticación con Google');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   // Logout handler
   const handleLogout = () => {
     setUser(null);
@@ -251,7 +277,7 @@ function App() {
 
 
   if (!user) {
-    return <Login onLogin={handleLogin} loading={loading} />;
+    return <Login onLogin={handleLogin} onGoogleLogin={handleGoogleLogin} loading={loading} />;
   }
 
   return (
