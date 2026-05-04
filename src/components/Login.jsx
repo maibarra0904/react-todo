@@ -1,28 +1,14 @@
 import { useState } from 'react';
-
 import PropTypes from 'prop-types';
 import swasLogo from '../assets/swas-logo.svg';
 import { GoogleLogin } from '@react-oauth/google';
 
-
-export default function Login({ onLogin, onGoogleLogin, loading }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+export default function Login({ onLogin, loading }) {
   const [error, setError] = useState('');
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    if (!email || !password) {
-      setError('Completa todos los campos');
-      return;
-    }
-    onLogin(email, password, setError);
-  };
 
   return (
     <div className="d-flex flex-column align-items-center justify-content-center min-vh-100 bg-light dark:bg-gray-900">
-      <form onSubmit={handleSubmit} className="p-4 rounded shadow bg-white dark:bg-gray-800 d-flex flex-column align-items-center" style={{minWidth:320, maxWidth:400}}>
+      <div className="p-4 rounded shadow bg-white dark:bg-gray-800 d-flex flex-column align-items-center" style={{minWidth:320, maxWidth:400}}>
         <img
           src={swasLogo}
           alt="SWAS Logo"
@@ -30,32 +16,22 @@ export default function Login({ onLogin, onGoogleLogin, loading }) {
           draggable={false}
         />
         <h2 className="mb-4 text-center w-100">Iniciar sesión</h2>
-        <div className="mb-3 w-100">
-          <label className="form-label">Email</label>
-          <input type="email" className="form-control" value={email} onChange={e => setEmail(e.target.value)} autoFocus />
-        </div>
-        <div className="mb-3 w-100">
-          <label className="form-label">Contraseña</label>
-          <input type="password" className="form-control" value={password} onChange={e => setPassword(e.target.value)} />
-        </div>
-        {error && <div className="alert alert-danger py-1 w-100">{error}</div>}
-        <button type="submit" className="btn btn-primary w-100" disabled={loading}>
-          {loading ? 'Ingresando...' : 'Entrar'}
-        </button>
-
-        <div className="d-flex align-items-center w-100 my-3">
-          <hr className="flex-grow-1" />
-          <span className="px-2 text-muted" style={{fontSize: '0.875rem'}}>o</span>
-          <hr className="flex-grow-1" />
-        </div>
         
-        <div className="d-flex justify-content-center w-100 mb-3">
-          <GoogleLogin 
-            onSuccess={credentialResponse => {
-              if(onGoogleLogin) onGoogleLogin(credentialResponse, setError);
-            }}
-            onError={() => setError('Error al iniciar sesión con Google')}
-          />
+        {error && <div className="alert alert-danger py-1 w-100">{error}</div>}
+        
+        <div className="d-flex justify-content-center w-100 mb-3 mt-2">
+          {loading ? (
+            <button className="btn btn-primary w-100" disabled>
+              Ingresando...
+            </button>
+          ) : (
+            <GoogleLogin 
+              onSuccess={credentialResponse => {
+                if(onLogin) onLogin(credentialResponse, setError);
+              }}
+              onError={() => setError('Error al iniciar sesión con Google')}
+            />
+          )}
         </div>
 
         <div style={{ marginTop: '16px', textAlign: 'center' }}>
@@ -68,13 +44,12 @@ export default function Login({ onLogin, onGoogleLogin, loading }) {
               ¿No tienes cuenta? Regístrate aquí
             </a>
           </div>
-      </form>
+      </div>
     </div>
   );
 }
 
 Login.propTypes = {
   onLogin: PropTypes.func.isRequired,
-  onGoogleLogin: PropTypes.func,
   loading: PropTypes.bool
 };

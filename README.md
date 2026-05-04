@@ -42,7 +42,7 @@ A modern, responsive Todo application built with React and Vite. This app featur
 
 ## Authentication
 
-This application utilizes a backend to handle authentication. It communicates with a remote API (defined in `VITE_API_URL`) to validate email/password credentials and Google OAuth tokens.
+This application exclusively utilizes a backend to handle authentication via Google OAuth. It communicates with a remote API (defined in `VITE_API_URL`) to validate Google tokens securely.
 
 ## Deployment
 

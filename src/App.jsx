@@ -62,32 +62,7 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   // Login handler
-  const handleLogin = async (email, password, setError) => {
-    setLoading(true);
-    const API_URL = import.meta.env.VITE_API_URL;
-    setError && setError("");
-    try {
-      const res = await fetch(`${API_URL}/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.message || 'Credenciales incorrectas');
-      }
-      const data = await res.json();
-      setUser(data.user || { email });
-      localStorage.setItem('user', JSON.stringify(data.user || { email }));
-    } catch (err) {
-      setError && setError(err.message || 'Error de autenticación');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Google Login handler
-  const handleGoogleLogin = async (credentialResponse, setError) => {
+  const handleLogin = async (credentialResponse, setError) => {
     setLoading(true);
     const API_URL = import.meta.env.VITE_API_URL;
     setError && setError("");
@@ -277,7 +252,7 @@ function App() {
 
 
   if (!user) {
-    return <Login onLogin={handleLogin} onGoogleLogin={handleGoogleLogin} loading={loading} />;
+    return <Login onLogin={handleLogin} loading={loading} />;
   }
 
   return (
