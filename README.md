@@ -31,7 +31,6 @@ A modern, responsive Todo application built with React and Vite. This app featur
    ```
 3. Set up the environment variables. Create a `.env` file and configure your credentials (you can use `.env.example` as a guide):
    ```env
-   VITE_API_URL=https://swas-backend.onrender.com/api/auth
    VITE_ID_PROJECT=WSX
    VITE_GOOGLE_CLIENT_ID=your_google_client_id_here
    ```
@@ -42,7 +41,7 @@ A modern, responsive Todo application built with React and Vite. This app featur
 
 ## Authentication
 
-This application exclusively utilizes a backend to handle authentication via Google OAuth. It communicates with a remote API (defined in `VITE_API_URL`) to validate Google tokens securely.
+This application exclusively utilizes a backend to handle authentication via Google OAuth. It communicates with a remote API to validate Google tokens securely.
 
 ## Deployment
 
