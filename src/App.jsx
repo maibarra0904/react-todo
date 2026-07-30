@@ -8,7 +8,7 @@ import { TodoFilter } from "./components/TodoFilter";
 import { TodoList } from "./components/TodoList";
 import { ProjectSidebar } from "./components/ProjectSidebar";
 import { DataSidebar } from "./components/DataSidebar";
-import Login from "./components/Login";
+import Swal from "sweetalert2";
 // Leer la URL de la API desde variable de entorno Vite
 
 
@@ -50,47 +50,38 @@ function App() {
   const [filter, setFilter] = useState('all');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [dataSidebarOpen, setDataSidebarOpen] = useState(false);
-  const [user, setUser] = useState(() => {
-    // Persistencia simple en localStorage
-    try {
-      const u = localStorage.getItem('user');
-      return u ? JSON.parse(u) : null;
-    } catch {
-      return null;
-    }
-  });
-  const [loading, setLoading] = useState(false);
+  const user = { email: "Usuario Local" };
 
-  // Login handler
-  const handleLogin = async (credentialResponse, setError) => {
-    setLoading(true);
-    const API_URL = import.meta.env.VITE_API_URL;
-    setError && setError("");
-    try {
-      const res = await fetch(`${API_URL}/google`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idToken: credentialResponse.credential })
+  // Reset data handler
+  const handleResetData = async () => {
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esto borrará todas tus tareas y proyectos locales de forma irreversible.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, borrar todo',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        confirmButton: 'btn btn-danger px-4 mx-2',
+        cancelButton: 'btn btn-secondary px-4 mx-2'
+      },
+      buttonsStyling: false
+    });
+    
+    if (result.isConfirmed) {
+      localStorage.removeItem('projects');
+      setProjects([
+        { id: "default", name: "Proyecto Principal", todos: [] }
+      ]);
+      setCurrentProjectId("default");
+      Swal.fire({
+        icon: 'success',
+        title: 'Datos restablecidos',
+        timer: 1200,
+        showConfirmButton: false,
+        confirmButtonColor: '#3085d6'
       });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.message || 'Error en autenticación con Google');
-      }
-      const data = await res.json();
-      setUser(data.user || {});
-      localStorage.setItem('user', JSON.stringify(data.user || {}));
-    } catch (err) {
-      setError && setError(err.message || 'Error de autenticación con Google');
-    } finally {
-      setLoading(false);
     }
-  };
-
-
-  // Logout handler
-  const handleLogout = () => {
-    setUser(null);
-    localStorage.removeItem('user');
   };
 
   useEffect(() => {
@@ -116,21 +107,27 @@ function App() {
     return Date.now().toString(36) + Math.random().toString(36).slice(2);
   }
 
-  const createTodo = (title) => {
+  const createTodo = (title, dueDate) => {
     const newTodo = {
       id: generateId(),
       title: title.trim(),
-      completed: false
+      completed: false,
+      dueDate: dueDate || null
     };
-    const firstCompletedIndex = todos.findIndex(t => t.completed);
-    
-    if (firstCompletedIndex === -1) {
-      setTodosForCurrent([...todos, newTodo]);
-    } else {
-      const beforeCompleted = todos.slice(0, firstCompletedIndex);
-      const afterCompleted = todos.slice(firstCompletedIndex);
-      setTodosForCurrent([...beforeCompleted, newTodo, ...afterCompleted]);
-    }
+
+    const activeTodos = todos.filter((t) => !t.completed);
+    const completedTodos = todos.filter((t) => t.completed);
+
+    const sortedActiveTodos = [...activeTodos, newTodo].sort((a, b) => {
+      if (a.dueDate && !b.dueDate) return -1;
+      if (!a.dueDate && b.dueDate) return 1;
+      if (a.dueDate && b.dueDate) {
+        return a.dueDate.localeCompare(b.dueDate);
+      }
+      return 0;
+    });
+
+    setTodosForCurrent([...sortedActiveTodos, ...completedTodos]);
   };
 
   const removeTodo = (id) => {
@@ -251,10 +248,6 @@ function App() {
   };
 
 
-  if (!user) {
-    return <Login onLogin={handleLogin} loading={loading} />;
-  }
-
   return (
     <div className="bg-gray-300 dark:bg-gray-800 transition-all duration-700 bg-[url('./assets/images/bg-mobile-light.jpg')] bg-no-repeat bg-contain min-h-screen dark:bg-[url('./assets/images/bg-mobile-dark.jpg')] md:bg-[url('./assets/images/bg-desktop-light.jpg')] md:dark:bg-[url('./assets/images/bg-desktop-dark.jpg')] flex">
       {/* Sidebars fijos */}
@@ -310,10 +303,13 @@ function App() {
               e.currentTarget.style.background = 'linear-gradient(90deg, #d32f2f 60%, #ff6b6b 100%)';
               e.currentTarget.style.boxShadow = '0 2px 8px 0 #d32f2f33';
             }}
-            onClick={handleLogout}
+            onClick={handleResetData}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" style={{marginRight:6,verticalAlign:'middle'}}><path d="M6 13.5A1.5 1.5 0 0 1 4.5 12V4A1.5.5 0 0 1 6 2.5h4A1.5.5 0 0 1 11.5 4v2a.5.5 0 0 1-1 0V4a.5.5 0 0 0-.5-.5H6A.5.5 0 0 0 5.5 4v8a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 10 13.5H6z"/><path d="M8.146 11.354a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 9.293V6.5a.5.5 0 0 0-1 0v2.793l-2.646-2.647a.5.5 0 0 0-.708.708l3 3z"/></svg>
-            Cerrar sesión
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" style={{marginRight:6,verticalAlign:'middle'}}>
+              <path d="M11 5.466V4H5v1.466C5 5.76 5.23 6 5.5 6h5c.27 0 .5-.24.5-.534z"/>
+              <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1 0-2h3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3a.5.5 0 0 0 0 1H13.5a.5.5 0 0 0 0-1H10.5a.5.5 0 0 1-1-1h-2a.5.5 0 0 1-1 1H2.5z"/>
+            </svg>
+            Restablecer datos
           </button>
         </div>
         <Header />

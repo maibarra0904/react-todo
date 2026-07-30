@@ -146,8 +146,11 @@ export const ProjectSidebar = ({ projects, currentProjectId, onSelectProject, on
                       showCancelButton: true,
                       confirmButtonText: 'Sí, eliminar',
                       cancelButtonText: 'Cancelar',
-                      confirmButtonColor: '#d33',
-                      cancelButtonColor: '#3085d6',
+                      customClass: {
+                        confirmButton: 'btn btn-danger px-4 mx-2',
+                        cancelButton: 'btn btn-secondary px-4 mx-2'
+                      },
+                      buttonsStyling: false
                     });
                     if(result.isConfirmed){
                       onDeleteProject(p.id);

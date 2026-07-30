@@ -75,11 +75,21 @@ const TodoItem = React.forwardRef(
             >
               {title}
             </span>
-            {todo.completedAt && (
-              <small className="text-muted" style={{fontSize: '0.8rem'}}>
-                ✅ Ejecutado el: {todo.completedAt}
-              </small>
-            )}
+            <div className="d-flex flex-wrap gap-2 align-items-center mt-1">
+              {todo.dueDate && (
+                <small className={`text-info dark:text-cyan-400 d-flex align-items-center ${completed ? 'text-decoration-line-through opacity-50' : ''}`} style={{fontSize: '0.8rem', fontWeight: 500}}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16" className="me-1">
+                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+                  </svg>
+                  Vence el: {todo.dueDate}
+                </small>
+              )}
+              {todo.completedAt && (
+                <small className="text-muted d-flex align-items-center" style={{fontSize: '0.8rem'}}>
+                  ✅ Ejecutado el: {todo.completedAt}
+                </small>
+              )}
+            </div>
           </div>
         )}
         <button
@@ -107,7 +117,9 @@ TodoItem.propTypes = {
   todo: PropTypes.shape({
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     title: PropTypes.string.isRequired,
-    completed: PropTypes.bool.isRequired
+    completed: PropTypes.bool.isRequired,
+    dueDate: PropTypes.string,
+    completedAt: PropTypes.string
   }).isRequired,
   removeTodo: PropTypes.func.isRequired,
   updateTodo: PropTypes.func.isRequired,
